@@ -1,0 +1,14 @@
+<!-- wiki/templates/wiki/base.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Wiki</title>
+</head>
+<body>
+    <h1><a href="{% url 'home' %}">Simple Wiki</a></h1>
+    <hr>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

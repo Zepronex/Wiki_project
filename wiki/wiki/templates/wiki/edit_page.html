@@ -1,0 +1,13 @@
+<!-- wiki/templates/wiki/edit_page.html -->
+
+{% extends 'wiki/base.html' %}
+
+{% block content %}
+    <h2>Edit Page: {{ page_name }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="content" rows="20" cols="80">{{ content }}</textarea><br>
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'view_page' page_name=page_name %}">Cancel</a>
+{% endblock %}

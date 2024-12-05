@@ -1,0 +1,15 @@
+<!-- wiki/templates/wiki/home.html -->
+
+{% extends 'wiki/base.html' %}
+
+{% block content %}
+    <h2>All Pages</h2>
+    <ul>
+        {% for page in pages %}
+            <li><a href="{% url 'view_page' page_name=page %}">{{ page }}</a></li>
+        {% empty %}
+            <li>No pages available.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'edit_page' page_name='NewPage' %}">Create a New Page</a>
+{% endblock %}

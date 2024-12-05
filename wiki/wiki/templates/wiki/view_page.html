@@ -1,0 +1,9 @@
+<!-- wiki/templates/wiki/view_page.html -->
+
+{% extends 'wiki/base.html' %}
+
+{% block content %}
+    <h2>{{ page_name }}</h2>
+    <p>{{ content|linebreaks }}</p>
+    <a href="{% url 'edit_page' page_name=page_name %}">Edit Page</a>
+{% endblock %}
