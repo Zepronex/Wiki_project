@@ -7,6 +7,7 @@ from .views import (
     ArticleDeleteView
 )
 
+
 # defines url paths for the different views
 urlpatterns = [
     path('', ArticleListView.as_view(), name='article-list'),

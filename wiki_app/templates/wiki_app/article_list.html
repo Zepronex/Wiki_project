@@ -1,0 +1,23 @@
+{% extends "wiki_app/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Articles</h1>
+    <a href="{% url 'article-create' %}" class="btn btn-primary mb-3">New Article</a>
+    
+    {% for article in articles %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">
+                <a href="{% url 'article-detail' article.slug %}">{{ article.title }}</a>
+            </h5>
+            <p class="text-muted">
+                By {{ article.author }} | {{ article.created_at|date:"F d, Y" }}
+            </p>
+        </div>
+    </div>
+    {% empty %}
+    <p>No articles yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
