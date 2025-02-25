@@ -1,41 +1,57 @@
-from django.shortcuts import render
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
+from .models import Article, Category
 
-# Create your views here.
+# defines the model for viewing available articles
+class ArticleListView(ListView):
+    model = Article
+    template_name = 'wiki_app/article_list.html'
+    context_object_name = 'articles'
+    paginate_by = 10
 
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-import os
+    # retrieves relevant information for an article
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            return Article.objects.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(tags__icontains=query)
+            )
+        return super().get_queryset()
 
-# wiki/views.py
+# defines model for detailed view of an article, 
+# entering a article.
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'wiki_app/article_detail.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
-def home(request):
-    pages = os.listdir('wiki_pages')
-    pages = [page.replace('.txt', '') for page in pages if page.endswith('.txt')]
-    return render(request, 'wiki/home.html', {'pages': pages})
+# view for creating an article, user decides
+# title, content, category as well as tags.
+class ArticleCreateView(LoginRequiredMixin, CreateView):
+    model = Article
+    fields = ['title', 'content', 'category', 'tags']
+    template_name = 'wiki_app/article_form.html'
 
-def view_page(request, page_name):
-    try:
-        with open(f'wiki_pages/{page_name}.txt', 'r') as file:
-            content = file.read()
-    except FileNotFoundError:
-        return redirect('edit_page', page_name=page_name)
-    return render(request, 'wiki/view_page.html', {'page_name': page_name, 'content': content})
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
+# view for updating an existing article.
+class ArticleUpdateView(LoginRequiredMixin, UpdateView):
+    model = Article
+    fields = ['title', 'content', 'category', 'tags']
+    template_name = 'wiki_app/article_form.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
-# wiki/views.py
-
-def edit_page(request, page_name):
-    if request.method == 'POST':
-        content = request.POST.get('content', '')
-        os.makedirs('wiki_pages', exist_ok=True)
-        with open(f'wiki_pages/{page_name}.txt', 'w') as file:
-            file.write(content)
-        return redirect('view_page', page_name=page_name)
-    else:
-        content = ''
-        try:
-            with open(f'wiki_pages/{page_name}.txt', 'r') as file:
-                content = file.read()
-        except FileNotFoundError:
-            pass
-        return render(request, 'wiki/edit_page.html', {'page_name': page_name, 'content': content})
+# view for deleting an existing article.
+class ArticleDeleteView(LoginRequiredMixin, DeleteView):
+    model = Article
+    template_name = 'wiki_app/article_confirm_delete.html'
+    success_url = '/'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
