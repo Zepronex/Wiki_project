@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'wiki',
+    'wiki_app',
+    'wiki_app.apps.WikiAppConfig', 
+    'django.contrib.sites',
+    'allauth',
 ]
 
 MIDDLEWARE = [

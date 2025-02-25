@@ -1,6 +1,5 @@
 from django.apps import AppConfig
 
-
-class WikiConfig(AppConfig):
+class WikiAppConfig(AppConfig):  # Renamed from WikiConfig
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'wiki'
+    name = 'wiki_app'  # Must match the app directory name
