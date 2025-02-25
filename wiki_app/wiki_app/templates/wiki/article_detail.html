@@ -1,0 +1,28 @@
+{% extends "wiki_app/base.html" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h1>{{ article.title }}</h1>
+            <small class="text-muted">
+                By {{ article.author }} | {{ article.created_at|date:"F d, Y" }}
+                {% if article.updated_at != article.created_at %}
+                    (Updated: {{ article.updated_at|date:"F d, Y" }})
+                {% endif %}
+            </small>
+        </div>
+        <div class="card-body">
+            <div class="article-content">
+                {{ article.content|markdownify }}
+            </div>
+            {% if article.author == user %}
+                <div class="mt-4">
+                    <a href="{% url 'article-update' article.slug %}" class="btn btn-primary">Edit</a>
+                    <a href="{% url 'article-delete' article.slug %}" class="btn btn-danger">Delete</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
